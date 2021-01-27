@@ -25,4 +25,8 @@ def getKeys(str):
     rindex=str.rfind("/")
     lindex=str.rfind('.htm')
     return str[index+1:ind]
-
+def htmlToLmx(data):
+    '''
+    将HTML转换为指定格式内容返回
+    '''
+    pass 

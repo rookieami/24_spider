@@ -1,4 +1,4 @@
-from cla_object import zhibo8
+from class_obj.zhibo8 import zhibo8
 import requests
 import requests
 from util import PrintErr

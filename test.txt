@@ -1,0 +1,2 @@
+spider_object 基类
+class_obj  派生类

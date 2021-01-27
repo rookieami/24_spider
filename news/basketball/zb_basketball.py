@@ -1,6 +1,4 @@
-from cla_object import  zhibo8
-
-
+from class_obj import  zhibo8
 
 def run(url):
     zb=zhibo8.ZbClass(url)
