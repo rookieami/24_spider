@@ -16,3 +16,13 @@ def PrintInfo(*strInfo):
     打印信息
     '''
     print(strInfo)
+
+
+def getKeys(str):
+    '''
+    获取字典的key值
+    '''
+    rindex=str.rfind("/")
+    lindex=str.rfind('.htm')
+    return str[index+1:ind]
+
