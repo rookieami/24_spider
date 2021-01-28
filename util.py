@@ -20,11 +20,19 @@ def PrintInfo(*strInfo):
 
 def getKeys(str):
     '''
-    获取字典的key值
+    根据url获取字典的key值
     '''
     rindex=str.rfind("/")
     lindex=str.rfind('.htm')
-    return str[index+1:ind]
+    return str[rindex+1:lindex]
+def joinUrl(url,format):
+    '''
+    拼接url地址
+    url 地址
+    format 前缀
+    '''
+    return format+url
+
 def htmlToLmx(data):
     '''
     将HTML转换为指定格式内容返回
