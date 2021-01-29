@@ -1,10 +1,14 @@
 import requests
 from xml.etree import ElementTree
-from util import PrintErr,getKeys
+from util import *
 from bs4 import BeautifulSoup
+
+from contextlib import closing
+from store import ds
+
 class Spider(object):
-    def __init__(self):
-        pass
+    def __init__(self,catchFrom):
+        self.catchFrom=catchFrom
         # self.url=url #原始爬虫路径
     def getUrlsData(self,url):
         ''' 访问url 获取html原始文件
@@ -51,5 +55,66 @@ class Spider(object):
                 continue
             completeList.append(artList)
         respList=[missList,completeList]
-        return  respList            
+        return  respList         
+
+    def formatArticle(self,articleList,word):
+        '''
+        格式化文章
+        '''
+        for article in articleList:
+            #标题处理
+            if article[2] is not None:
+                article[2]=strReplace(article[3],word) #敏感词替换为空格
+            #正文格式化,去掉链接,敏感词等
+            if article[5] is not None:
+                article[5]=fromatContent(article[5],word)        
+        return articleList
+
+    def storageData(self,dataList,dataType):
+        '''
+        原始数据入库
+        dataList 数据列表
+        dataType 数据类型 0:完整 1缺失
+        '''
+        #根据类型选择数据表
+        tableName=getTableName(dataType)
+        fromName=getFromName(self.catchFrom)
+        update_key_list=[
+            'catch_from', #来源
+            'origin_url', #原贴地址
+            'title',  #文章标题
+            'origin_display_author', #文章来源
+            'img_url', #封面图地址
+            'all_tags', #原文标签
+            'origin_content', #原文内容
+            'origin_publish_at',#原文发布时间
+        ]
+        # except_list=['create_at']
+        insert_key_list=update_key_list # +except_list
+        sql=mixInsertUpdateSql(insert_key_list,update_key_list,[],tableName,True)
+        for data in dataList:
+            try:
+                
+                print(data)
+                insert_tup=(
+                    self.catchFrom,
+                    data[1],
+                    data[0],
+                    fromName,
+                    data[4],
+                    data[2],
+                    data[5],
+                    data[3],      
+                )
+                #入库
+                with closing(ds.get_connection()) as conn, closing(conn.cursor()) as cur:
+
+                    print(insert_tup)
+                    cur.execute(sql, insert_tup)
+                    conn.commit()
+            except Exception as e:
+                PrintErr(e)
+                continue
+        
+
 

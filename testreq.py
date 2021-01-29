@@ -3,6 +3,10 @@ from util import PrintErr
 from bs4 import BeautifulSoup
 import bs4
 import re
+from util import fromatContent
+
+
+
 url = 'https://news.zhibo8.cc/zuqiu/more.htm'
 
 
@@ -61,7 +65,7 @@ def main():
     #             #处理数据
     #         # print(articleList)
 
-    # resp = requests.get('https://news.zhibo8.cc/zuqiu/2021-01-28/60101eeb048b3.htm')
+    # resp = requests.get('https://news.zhibo8.cc/zuqiu/2021-01-29/6013cef67f96d.htm')
     # resp.raise_for_status()  # 状态码不是200,异常
     # resp.encoding = 'utf-8'
     # # doc = BeautifulSoup(resp.text, 'lxml')
@@ -73,19 +77,32 @@ def main():
     # content=doc.find('div',class_='content')
     # # print(content)
     # # print(content.string)
-    # img=content.find('img').get('src')
-    # print(img)
+    
+    # imgTag=content.find('img')
+    # img=""
+    # if imgTag is not None:
+    #     img=imgTag.get('src')
+    # # print("妖兽啦,没标签啊")
+                
     # stri=''
     # for na in content:
     #     # print(type(na))
     #     if isinstance(na,bs4.element.Tag):
+    #         if na.find('style') is not None:
+    #             na.style.extract()
+    #         #     # continue
+    #             print(na)
     #         if na.string is None:  #过滤图片
+    #             # print(na)
     #             continue #移除该标签
-    #         # print(na.attrs)
+    #             # pass
     #         if na.attrs=={'class': ['img-info']}: #过滤图片注释
     #             # print(na.attrs)
     #             continue  
-     
+    #         if na.name !='p':
+    #             print(na.name)
+    #             # continue
+                
     #     stri+=str(na)
 
     # print(stri)
@@ -108,9 +125,14 @@ def main():
 
 
     #正则校检
-    stri='<a class="reference external" href="http://www.crummy.com/software/BeautifulSoup/bs3/documentation.html">Beautiful Soup3</a>'
-    result_div_list=re.findall('<(.*?)>'stri)
-    if 'href' in str(result_div_)
+    stri='<p><a class="reference external" href="http://www.crummy.com/software/BeautifulSoup/bs3/documentation.html">Beautiful Soup3,直播吧的喜爱的和暗示法玩CFWFSAEFDERFVEACVWDFSFWC大范围大</a></p>'
+    string=fromatContent(stri,'直播吧')
+    print(string)
+    #list双重循环是否修改了
+    # lis=[[1,2,4],[1,2,6],[132,3,56]]
+    # for v in lis:
+    #     v[1]=6  #[[1, 6, 4], [1, 6, 6], [132, 6, 56]]
+    # print(lis)  
 
 if __name__=='__main__':
     main()

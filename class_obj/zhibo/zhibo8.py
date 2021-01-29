@@ -5,9 +5,10 @@ from xml.etree import ElementTree
 import requests
 import bs4
 class ZbClass(news_spider.Spider):
-    def __init__(self):
+    def __init__(self, catchFrom):
         # self.url=url    
-        super().__init__()
+        self.catchFrom=catchFrom
+        super().__init__(catchFrom)
     def PassHTMLData(self,resp):
         '''
         解析html,存储新闻链接列表
@@ -25,17 +26,18 @@ class ZbClass(news_spider.Spider):
                         tag=data.get('data-label')  #标签
                         tempTag=tag[1:-1] #去除多余的','
                         link=data.find('span',class_="articleTitle").find('a').get('href') #url
+                        url=joinUrl(link,'https:')
                         title=data.find('span',class_="articleTitle").find('a').text  #标题
                         time=data.find('span',class_="postTime").text  #时间
                         key=getKeys(link)         
                         articleDict={
                             'tag':tempTag,
-                            'link':link,   #确认这个地方要不要存
+                            'link':url,   
                             'title':title,
                             'time':time
                         }
                         articleInfos[key]=articleDict #字典存储该记录
-                        urlList.append(link) #记录url   
+                        urlList.append(url) #记录url   
         except Exception as e:
             PrintErr(e)
             return
@@ -48,8 +50,7 @@ class ZbClass(news_spider.Spider):
         遍历新闻列表，获取新闻正文，图片
         '''
         for url in urlList:
-            ul=joinUrl(url,'https:')
-            resp=self.getUrlsData(ul) #获取新闻详情页
+            resp=self.getUrlsData(url) #获取新闻详情页
             try:
                 doc=BeautifulSoup(resp.text, 'lxml')
                 if doc is None:
@@ -67,11 +68,15 @@ class ZbClass(news_spider.Spider):
                 conStr=''
                 for p in content:
                     if isinstance(p,bs4.element.Tag):
+                        if p.find('style') is not None: #先移除style标签,防止干扰下一步图片过滤
+                            p.style.extract()
                         if p.string is None: #标签下内容为空,用来过滤图片
                             continue
                         if p.attrs=={'class': ['img-info']}: #过滤图片注释
                             # print(na.attrs)
                             continue  
+                        if p.name !='p':
+                            continue
                         conStr+=str(p) #拼接存储文章正文内容
                     
                 key=getKeys(url)
