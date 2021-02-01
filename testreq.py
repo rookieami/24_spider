@@ -3,8 +3,10 @@ from util import PrintErr
 from bs4 import BeautifulSoup
 import bs4
 import re
-from util import fromatContent
+from util import fromatContent,timeToStamp
 
+import time
+import datetime
 
 
 url = 'https://news.zhibo8.cc/zuqiu/more.htm'
@@ -125,14 +127,42 @@ def main():
 
 
     #正则校检
-    stri='<p><a class="reference external" href="http://www.crummy.com/software/BeautifulSoup/bs3/documentation.html">Beautiful Soup3,直播吧的喜爱的和暗示法玩CFWFSAEFDERFVEACVWDFSFWC大范围大</a></p>'
-    string=fromatContent(stri,'直播吧')
-    print(string)
+    stri='\n<p style="text-align: center;"><img alt="" src="//tu.duoduocdn.com/uploads/day_210129/202101290049394993.jpg"/></p><p>直播吧1月29日讯\xa0<span style="">热刺官方宣布年轻后卫马拉奇（</span>Malachi Fagan-Walcott<span style="">）租借加盟苏冠邓迪联，租期至本赛季结束。</span></p><p><span style="">马拉奇现年</span>18<span style="">岁，是热刺青训营培养的球员。去年</span><span style="">3</span><span style="">月对阵莱比锡的欧冠</span><span style="">1/8</span><span style="">决赛，他在比赛最后阶段替补登场为一线队上演首秀。最近，马拉奇从伤病中复出并开始代表热刺预备队出战比赛。</span></p><p><span style="">（二怪）</span></p> '
+    # groupStr=re.search('(<a)[^>]*([^<]*)</a>',stri)
+    # groupStr=re.search('<[a-zA-Z]+.*?>([\s\S]*?)</[a-zA-Z]*?>',stri)
+    # print(string)
+    # if groupStr is not None:
+    #     # ('<!--[^>]*-->','',st,0) 
+    #     print(groupStr)
+    #     print(groupStr.group(2))
+    #     st=re.sub('<a href[^>]*>','',stri,0) #<a>标签置空
+    #     st=re.sub('</a>','',st,0)
+    #     print(st)
+
+    # print(fromatContent(stri,'直播吧'))
+
+
+
+
+
+
     #list双重循环是否修改了
     # lis=[[1,2,4],[1,2,6],[132,3,56]]
     # for v in lis:
     #     v[1]=6  #[[1, 6, 4], [1, 6, 6], [132, 6, 56]]
     # print(lis)  
 
+    #语句拼接
+    # querySql="select id from %s where  `type`='%s' and origin_url='%s'" %('mytest','newsType','adqwdwaewd')
+    # print(querySql)
+
+    #时间格式化
+    #字符串转换为时间戳
+    a='2021-02-01 18:38:43'
+    # print(time.strptime(a,"%Y-%m-%d %H:%M:%S"))
+    # print(time.mktime(time.strptime(a,"%Y-%m-%d %H:%M:%S")))
+    print(timeToStamp(a))
+
+    
 if __name__=='__main__':
     main()

@@ -7,5 +7,12 @@ FORMATDATA=2 #洗稿后
 FROMZHIBO8=1  #直播吧
 FROMQQ=2
 
+#类型
+LANQIU='lanqiu'
+ZUQIU='zuqiu'
+ZONGHE='zonghe'
+
+
+
 
 

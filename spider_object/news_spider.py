@@ -7,15 +7,16 @@ from contextlib import closing
 from store import ds
 
 class Spider(object):
-    def __init__(self,catchFrom):
+    def __init__(self,catchFrom,newsType):
         self.catchFrom=catchFrom
-        # self.url=url #原始爬虫路径
+        self.newsType=newsType
+
     def getUrlsData(self,url):
         ''' 访问url 获取html原始文件
             转换为lxml格式
         '''
         try:
-            resp= requests.get(url)
+            resp= requests.get(url,timeout=5)
             resp.raise_for_status() #状态码不是200,异常
             resp.encoding='utf-8'
         except Exception as e:
@@ -64,18 +65,21 @@ class Spider(object):
         for article in articleList:
             #标题处理
             if article[2] is not None:
-                article[2]=strReplace(article[3],word) #敏感词替换为空格
+                article[2]=strReplace(article[2],word) #敏感词替换为空格
             #正文格式化,去掉链接,敏感词等
             if article[5] is not None:
                 article[5]=fromatContent(article[5],word)        
         return articleList
 
-    def storageData(self,dataList,dataType):
+    def storageData(self,dataList,dataType,newsType):
         '''
         原始数据入库
         dataList 数据列表
         dataType 数据类型 0:完整 1缺失
+        newsType 新闻类型 足球,篮球,综合
         '''
+        if dataList is None:
+            return
         #根据类型选择数据表
         tableName=getTableName(dataType)
         fromName=getFromName(self.catchFrom)
@@ -88,6 +92,7 @@ class Spider(object):
             'all_tags', #原文标签
             'origin_content', #原文内容
             'origin_publish_at',#原文发布时间
+            'type',# 新闻类型
         ]
         # except_list=['create_at']
         insert_key_list=update_key_list # +except_list
@@ -95,21 +100,30 @@ class Spider(object):
         for data in dataList:
             try:
                 
-                print(data)
+                # print(data)
                 insert_tup=(
                     self.catchFrom,
-                    data[1],
-                    data[0],
-                    fromName,
-                    data[4],
-                    data[2],
-                    data[5],
-                    data[3],      
+                    data[1], #url
+                    data[2], #标题
+                    fromName, #来源
+                    data[4], #img
+                    data[0], #tag
+                    data[5], #content
+                    data[3],  #time
+                    self.newsType,     
                 )
+                #查询是否有这条数据
+                querySql="select id from %s where  `type`='%s' and origin_url='%s'" %(tableName,newsType,data[1])
+                with closing(ds.get_connection()) as conn, closing(conn.cursor()) as cur:
+                    cur.execute(querySql)
+                    id=cur.fetchone()
+                if id is not None and id[0] >0:
+                    print("%s类型新闻已经存在,id:%s" % (newsType,id[0]))
+                    continue #存在该记录,跳出
                 #入库
                 with closing(ds.get_connection()) as conn, closing(conn.cursor()) as cur:
 
-                    print(insert_tup)
+                    # print(insert_tup)
                     cur.execute(sql, insert_tup)
                     conn.commit()
             except Exception as e:
