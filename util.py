@@ -67,6 +67,11 @@ def fromatContent(content, word):
     if st is not None:
         content = re.sub('style="[^=]*?"', '', content, 0)  # 替换所有的style为空格
 
+    #去除style标签
+    st=re.search('<style+>(.+)</style>',content)
+    if st is not None:
+        content=re.sub('<style+>(.+)</style>','',content,0)
+        
     # 去除 span标签
     st = re.search('<span\s*[^>]*>', content)
     if st is not None:

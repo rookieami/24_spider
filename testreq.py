@@ -67,47 +67,47 @@ def main():
     #             #处理数据
     #         # print(articleList)
 
-    # resp = requests.get('https://news.zhibo8.cc/zuqiu/2021-01-29/6013cef67f96d.htm')
-    # resp.raise_for_status()  # 状态码不是200,异常
-    # resp.encoding = 'utf-8'
-    # # doc = BeautifulSoup(resp.text, 'lxml')
-    # doc=BeautifulSoup(resp.text, 'lxml')
-    # if doc is None:
-    #     return
-    #             #解析详情页，获取首张图，文章正文
-    #             #signals > p:nth-child(1) > img
-    # content=doc.find('div',class_='content')
-    # # print(content)
-    # # print(content.string)
+    resp = requests.get('https://news.zhibo8.cc/zuqiu/2021-01-25/600e6dee1e5dd.htm')
+    resp.raise_for_status()  # 状态码不是200,异常
+    resp.encoding = 'utf-8'
+    # doc = BeautifulSoup(resp.text, 'lxml')
+    doc=BeautifulSoup(resp.text, 'lxml')
+    if doc is None:
+        return
+                #解析详情页，获取首张图，文章正文
+                #signals > p:nth-child(1) > img
+    content=doc.find('div',class_='content')
+    # print(content)
+    # print(content.string)
     
-    # imgTag=content.find('img')
-    # img=""
-    # if imgTag is not None:
-    #     img=imgTag.get('src')
-    # # print("妖兽啦,没标签啊")
+    imgTag=content.find('img')
+    img=""
+    if imgTag is not None:
+        img=imgTag.get('src')
+    # print("妖兽啦,没标签啊")
                 
-    # stri=''
-    # for na in content:
-    #     # print(type(na))
-    #     if isinstance(na,bs4.element.Tag):
-    #         if na.find('style') is not None:
-    #             na.style.extract()
-    #         #     # continue
-    #             print(na)
-    #         if na.string is None:  #过滤图片
-    #             # print(na)
-    #             continue #移除该标签
-    #             # pass
-    #         if na.attrs=={'class': ['img-info']}: #过滤图片注释
-    #             # print(na.attrs)
-    #             continue  
-    #         if na.name !='p':
-    #             print(na.name)
-    #             # continue
+    stri=''
+    for na in content:
+        # # print(type(na))
+        if isinstance(na,bs4.element.Tag):
+        #     if na.find('style') is not None:
+        #         na.style.extract()
+        #     #     # continue
+        #         print(na)
+        #     if na.string is None:  #过滤图片
+        #         # print(na)
+        #         continue #移除该标签
+        #         # pass
+        #     if na.attrs=={'class': ['img-info']}: #过滤图片注释
+        #         # print(na.attrs)
+        #         continue  
+            if na.name !='p':
+                print(na.name)
+                continue
                 
-    #     stri+=str(na)
+        stri+=str(na)
 
-    # print(stri)
+    print(stri)
        
     
     # ##测试字典追加是否更改
