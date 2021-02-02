@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 from spider_object import news_spider
 from bs4 import BeautifulSoup
 from util import PrintErr,getKeys,joinUrl,timeToStamp
@@ -5,10 +7,9 @@ from xml.etree import ElementTree
 import requests
 import bs4
 class ZbClass(news_spider.Spider):
-    def __init__(self, catchFrom,newsType):
+    def __init__(self, catchFrom):
         self.catchFrom=catchFrom
-        self.newsType=newsType
-        super().__init__(catchFrom,newsType)
+        super().__init__(catchFrom)
     def PassHTMLData(self,resp,endTime):
         '''
         解析html,存储新闻链接列表
@@ -49,6 +50,7 @@ class ZbClass(news_spider.Spider):
                         articleInfos[key]=articleDict #字典存储该记录
                         urlList.append(url) #记录url   
         except Exception as e:
+            print("获取新闻列表错误")
             PrintErr(e)
             return
         endTime=tempTime #记录最新时间
@@ -78,18 +80,20 @@ class ZbClass(news_spider.Spider):
                 
                 conStr=''
                 for p in content:
-                    if p is None or '':
-                        if p.name !='p': #节点不为p
-                            p.extract()
+                    if isinstance(p,bs4.element.Tag):
+                        if p is None or '':
+                            if p.name !='p': #节点不为p
+                                p.extract()
                     conStr+=str(p) #拼接存储文章正文内容
                     
                 key=getKeys(url)
                 info=articleInfos[key]  #找出单个新闻字典
                 #追加元素
                 info['img']=img
-                info['content']=conStr 
+                info['content']=str(conStr)
                 # print(url)
             except Exception as e:
+                print("获取新闻正文内容错误")
                 PrintErr(e)
         return articleInfos  #返回所有数据，包含完整数据
     # def passArticleInfo(self,articleInfo):

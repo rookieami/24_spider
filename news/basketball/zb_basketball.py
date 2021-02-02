@@ -1,9 +1,11 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 from class_obj.zhibo import zhibo8
 import defind
 from util import getEndTime
-def run(url,newsType):
+def run(url):
     print("zhibo8")
-    zb=zhibo8.ZbClass(defind.FROMZHIBO8,newsType)
+    zb=zhibo8.ZbClass(defind.FROMZHIBO8)
     endTime=getEndTime() #获取最新抓取新闻的发布时间
 
     #是否for循环 休眠三分钟 time.sleep(180)
@@ -21,7 +23,9 @@ def run(url,newsType):
     missArticle=zb.formatArticle(articles[0],word)
     intactArticle=zb.formatArticle(articles[1],word)
     #存储数据
-    zb.storageData(missArticle,defind.MISSDATA,defind.ZUQIU)
-    zb.storageData(intactArticle,defind.INTACTDATA,defind.ZUQIU)
+    zb.storageData(missArticle,defind.MISSDATA)
+    respData=zb.storageData(intactArticle,defind.INTACTDATA)
+    
+    zb.request_Wash_article(respData)
     
     return

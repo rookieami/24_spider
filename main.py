@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 from class_obj.zhibo import zhibo8
 import requests
 import requests
@@ -9,7 +11,6 @@ import time
 
 url='https://news.zhibo8.cc/zuqiu/more.htm'
 def main():
-    
-    zb_basketball.run(url,defind.ZUQIU)
+    zb_basketball.run(url)
 if __name__=='__main__':
     main()

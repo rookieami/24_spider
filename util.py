@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 import re
 import defind
 from contextlib import closing
@@ -58,14 +60,21 @@ def strReplace(content, word):
     return content.replace(word, '')
 
 
-def fromatContent(content, word):
+def fromatContent(content="", word=""):
     '''
     格式化文本内容
     '''
+     # 去除\n
+    content = strReplace(content, '\n')
     # 替换style属性
     st = re.search('style="[^=]*?"', content)
     if st is not None:
         content = re.sub('style="[^=]*?"', '', content, 0)  # 替换所有的style为空格
+
+    #替换class=
+    st=re.search('class="[^=]*?"',content)
+    if st is not None:
+        content=re.sub('class="[^=]*?"','',content,0)
 
     #去除style标签
     st=re.search('<style+>(.+)</style>',content)
@@ -83,24 +92,37 @@ def fromatContent(content, word):
     if st is not None:
         content = re.sub('<img.*?(?:>|\/>)', '', content, 0)
 
+    #过滤iframe标签
+    st = re.search('<iframe[\s\S]+</iframe *>', content)
+    if st is not None:
+        content = re.sub('<iframe[\s\S]+</iframe *>', '', content, 0)
+    #过滤input
+    st=re.search('<input[\s\S]+</input *>',content)
+    if st is not None:
+        content = re.sub('<input[\s\S]+</input *>', '', content, 0)
+    #过滤frameset
+    st=re.search('<frameset[\s\S]+</frameset *>',content)
+    if st is not None:
+        content = re.sub('<frameset[\s\S]+</frameset *>', '', content, 0)
     # 去除链接,仅保留内容
     st = re.search('<a[^>]+>(.+)</a>', content)  # 正文去除<a></a>标签,内含超链接\
     if st is not None:
-        content = re.sub('<a href[^>]*>', '', content, 0)
+        content = re.sub('<a[^>]*>','', content, 0)
         content = re.sub('</a>', '', content, 0)
+        # content=re.sub('<a[^>]+>(.+)</a>','',content,0)
 
-    # 去除\n
-    content = strReplace(content, '\n')
     # 去除所有空格
-    content = content.replace(" ", "")
+    # content = content.replace(" ", "")
     # 去除空的<p><\P>
     content = re.sub(
         '<p[^>]*>(\s|&nbsp;|</?\s?br\s?/?>)*</?p>', '', content, 0)
     # 过滤注释
     content = re.sub('<!--[^>]*-->', '', content, 0)
-
+    #去除空的div
+    content=strReplace(content,'<div ></div>')
     # 敏感词替换为空格
     content = strReplace(content, word)
+    content = strReplace(content, '视频代码结束')
     return content
 
 # 将数据整合成insert update sql语句
@@ -189,3 +211,5 @@ def getEndTime():
     if respTime==0:
         return 0
     return time.mktime(respTime.timetuple())
+
+ 
